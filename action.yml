@@ -1,10 +1,18 @@
 name: "Configure the user for git as the GitHub Actions Bot"
+inputs:
+  path:
+    description: 'Path to git repository'
+    required: false
+    default: '.'
 runs:
   using: "composite"
   steps:
     - shell: bash
       run: |
         set -ex
-        bot_id=$(curl -s 'https://api.github.com/users/github-actions%5Bbot%5D' | sed -n '/"id"/s/[^0-9]*\([0-9]\+\).*/\1/p')
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email "${bot_id}+github-actions[bot]@users.noreply.github.com"
+        #bot_id=$(curl -s 'https://api.github.com/users/github-actions%5Bbot%5D' | sed -n '/"id"/s/[^0-9]*\([0-9]\+\).*/\1/p')
+        bot_id=41898282
+        cd ${{ inputs.path }}
+        git config --global --add safe.directory $(realpath .)
+        git config user.name 'GitHub Actions'
+        git config user.email "${bot_id}+github-actions[bot]@users.noreply.github.com"
